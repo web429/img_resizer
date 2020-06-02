@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Resize Image</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<h1>Resize Images Files Online</h1>
+	<div class="container">
+		<div class="upload_box col-sm-12">
+			<div class="upload_button">
+				<input class="filebutton" type="file" name="inpFile" id="inpFile" />
+			</div>
+		</div>
+		<div class="image-preview" id="imagePreview">
+			<img src="" alt="Image Preview" class="image_preview_image">
+			<span class="image_preview__default_text">Image Preview</span>
+		</div>
+	</div>
+	<button>Start</button>
+	<script>
+		const inpFile = document.getElementById("inpFile");
+		const previewContainer = document.getElementById("imagePreview");
+		const previewImage = previewContainer.querySelector(".image_preview_image");
+		const previewDefaultText = previewContainer.querySelector(".image_preview__default_text");
+
+		inpFile.addEventListener("change", function() {
+			const file = this.files[0];
+			console.log("file", file);
+			if (file) {
+				const reader = new FileReader();
+				previewDefaultText.style.display = "none";
+				previewImage.style.display = "block";
+				reader.addEventListener("load", function() {
+					previewImage.setAttribute("src", this.result);
+					console.log(this)
+				});
+				reader.readAsDataURL(file);
+			} else {
+				previewDefaultText.style.display = null;
+				previewImage.style.display = null;
+				previewImage.setAttribute("src", "")
+			}
+		})
+		// $(document).ready(function(){
+		// 	#("inpFile").on("change", function() {
+
+		// 	})
+		//   $("#hide").click(function(){
+		//     $("p").hide();
+		//   });
+		//   $("#show").click(function(){
+		//     $("p").show();
+		//   });
+		// });
+	</script>
+</body>
+</html>
