@@ -1,25 +1,67 @@
+body {
+	font-family: 'Avenir', serif;
+}
 .upload_box{
 	height: 300px;
-	background-color: #0066ee;
+	background-color: #367ff5;
 	position: relative;
+}
+.upload_box.highlight {
+  background-color: #6397eb;
+  
 }
 .upload_button {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+.remoteURL_button {
+	/*position: absolute;
+	bottom: 10%;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1;*/
+}
+#remoteURL_modal {
+	/*background-color: transparent !important;*/
+}
+#remoteURL_modal:hover {
+	text-decoration: underline;
+}
+#customButton {
+	border-radius: 5px;
+	border: none;
+	padding: 7px 9px;
+	background-color: white;
+	font-size: 1rem;
+	font-weight: 700;
+	outline: none;
+}
+#remoteURL_modal {
+	border-radius: 5px;
+	border: none;
+	padding: 7px 9px;
+	background-color: white;
+	font-size: 1rem;
+	font-weight: 700;
+	outline: none;
+}
+#customButton:hover {
+	box-shadow: 1px 3px rgba(0,0,0,.7);
+	transition: .5s all;
 
 }
 .filebutton {
-	background-color: white;
-	border-radius: 5px;
-	border: none;
+	display: none;
+	background-color: transparent;
+	border-radius: 5px;		 
+	width: 100%;
+	color: transparent;
 }
 .image-preview {
-	width: 300px;
-	min-height: 100px;
+	min-height: 300px;
 	border: 2px solid #dddddd;
-	margin-top: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -29,5 +71,12 @@
 .image_preview_image {
 	display: none;
 	width: 100%;
-
+}
+.path_text {
+	margin-top: 3rem;
+	font-size: 1rem;
+	color: black;
+}
+.setting-item {
+	border-bottom: 1px solid gray;
 }
