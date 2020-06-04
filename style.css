@@ -80,3 +80,9 @@ body {
 .setting-item {
 	border-bottom: 1px solid gray;
 }
+.setting-item-filter {
+	border: none;
+}
+.rangewrap {
+	margin: 3px auto;
+}
