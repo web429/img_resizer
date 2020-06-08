@@ -6,44 +6,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="./style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.5.0/css/all.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-<br>
+
+<div class="top-bar">
+  <script type="text/javascript">
+window.onload = function() {
+    var saverOptions = { file: "file" /* ... */ };
+    var saverButton = OneDrive.createSaveButton(saverOptions);
+    document.getElementById("save").appendChild(saverButton);
+}
+</script>
+
+<input id="file" name="file" type="file" />
+<div id="save"></div>
 
 <div class="container">
-  <h2>Image Resizer Tool</h2>
-  <br>
-  <!-- Nav tabs -->
+  <div class="text">
+      <h1>Resize Images Files Online</h1>
+      <div class="alert alert-info">
+        Desktop and laptop version has much more functions
+      </div>
+      <h2>Change the size of an image online, from anywhere, and completely for free.</h2>
+  </div>  <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" data-toggle="tab" href="#resize">Resize</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item final_omit">
       <a class="nav-link" data-toggle="tab" href="#compress">Compress</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item omit">
       <a class="nav-link" data-toggle="tab" href="#filter">Filter and Convert to JPG</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item omit">
       <a class="nav-link" data-toggle="tab" href="#scalable-resize">Scalable Resize</a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item choose_omit">
       <a class="nav-link" data-toggle="tab" href="#social-resize">Social Resize</a>
     </li>
   </ul>
-  <div class="upload_box col-md-12 col-xs-12" id="upload_box">
-      <div class="upload_button">
-        <input class="filebutton" type="file" name="inpFile" id="inpFile" onchange="changeText()"/>
-        <button id="customButton" title="Upload a file from your device...">Choose File...</button>
-      </div>
-
-  </div>
-    <div class="remoteURL_button">
-      <button id="remoteURL_modal" data-toggle="modal" data-target="#myModal">From URL</button>
+    <div class="upload_box col-md-12 col-xs-12" id="upload_box">
+        <form class="upload_button" id="upload_button" action="javascript:void(0);" data-url="" method="post" enctype="multipart/form-data">
+          <input class="hidden" id="inpFile" type="file" name="file" />
+          <!-- <div class="upload_button">
+            <input class="filebutton" type="file" name="inpFile" id="inpFile" onchange="changeText()"/>
+            <button id="customButton" title="Upload a file from your device...">Choose File...</button>
+          </div> -->
+          <div class="dropnotes">
+            <i class="fa fa-cloud-upload-alt fa-5x"></i>
+            <span class="w-100 d-inline-block">
+              Drop Files here
+            </span>
+            <span id="fileUploadButton" class="btn btn-default choose_omit" title="Upload a file from your device">
+              <i class="fa fa-search"></i>
+              Choose File
+            </span>
+          </div>
+          <div class="fileuplodButtom">
+            <a href="javascript:void(0)" id="remoteURL_modal"> <i class="fa fa-link"></i> Enter URL</a>
+            <a href="javascript:void(0)" onclick="showDropBoxPicker(event)" class="final_omit"> <i class="fab fa-dropbox"></i> Dropbox</a>
+            <a href="javascript:void(0)" onclick="showGDrivePickerDialog(event)" class="google_omit"> <i class="fab fa-google-drive"></i> Google Drive</a>
+            <a href="javascript:void(0)" onclick="launchOneDrivePicker(event)" class="omit"> <i class="fas fa-cloud" aria-hidden="true"></i> One Drive</a>
+          </div>
+        </form>
     </div>
+
+    <!-- <div class="remoteURL_button">
+      <button id="remoteURL_modal" data-toggle="modal" data-target="#myModal">From URL</button>
+    </div> -->
     <div class="modal" id="myModal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -71,7 +106,7 @@
     <div class="path_text">
       <span id="selectedFileName"></span>
     </div>
-    <div class="row">
+    <div class="row pb-3">
       <div class="image-preview col-md-6 col-sm-12 col-xs-12" id="imagePreview">
         <img src="" alt="Image Preview" id="image_preview_image" class="image_preview_image" />
         <span class="image_preview__default_text">Image Preview</span>
@@ -140,7 +175,21 @@
                   </div>
                 </div>
               </div>
-              <button class="btn btn-primary" onclick="downloadImg()">Start</button>
+              <button class="btn btn-primary" onclick="downloadImg()">Download</button>
+              <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
+              </a>
+              <div class="btn-group" style="float: right;">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Upload to 
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
+                  <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
+                  <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
+                </div>
+
+            </div>
+              <!-- <button class="btn btn-success" onclick="checkAuth()">Upload to Google Drive</button> -->
             </div>
           </div>
         </div>
@@ -196,7 +245,7 @@
               </div>
             </div>  
           </div>
-          <button class="btn btn-primary mt-5" onclick="downloadCompressImg()">Start</button>
+          <button class="btn btn-primary mt-5" onclick="downloadCompressImg()">Download</button>
         </div>
         <div class="image-settings container tab-pane fade" id="filter">
             <div class="card">
@@ -334,7 +383,7 @@
               <div class="setting-item mb-3">
                 <p>Scale Size:</p>
                 <div class="row">
-                  <div class="col-sm-4">
+                  <div class="col-sm-6">
                     <div class="input-group mb-3">
                       <input type="number" class="form-control" placeholder="width" name="scale_width_size" id="scale_width_size" onchange="scaleChangeWidth()" />
                       <div class="input-group-append">
@@ -342,7 +391,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-sm-4">
+                  <div class="col-sm-6">
                     <div class="input-group mb-3">
                       <input type="number" class="form-control" placeholder="height" name="scale_height_size" id="scale_height_size" onchange="scaleChangeHeight()"/>
                       <div class="input-group-append">
@@ -440,13 +489,132 @@
         </div>
       </div>    
     </div>
-      
-      
 </div>
-      
+</div>
+<hr class="hr_r final_omit">
+  <div class="container first-omit">
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <div class="logomg">
+          <a href="#" class="Link-chrome">
+            <img src="https://img2go6.ocstatic.com/assets/img/ChromeWebStore_Badge.png" alt="">
+          </a>
+          <a href="#" class="Link-firefox">
+            <img src="https://img2go6.ocstatic.com/assets/img/FirefoxWebStore_Badge.png" alt="">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <ul class="icons">
+          <li><h4 style="padding-top: 12px; font-size:1rem;font-weight: 700;color:#333;">Stay connected:</h4></li>
+          <li><button type="button" class="btn btn-primary bookmark"><i class="fa fa-star"></i> Bookmark</button></li>
+          <li><button type="button" class="btn btn-primary share"><i class="fab fa-facebook-f"></i> Share</button></li>
+          <li><button type="button" class="btn btn-primary tweet"><i class="fab fa-twitter"></i> Tweet</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="container final_omit">
+    <div class="title">
+      <h1>RESIZE IMAGE ONLINE</h1>
+      <h3>HOW TO RESIZE IMAGE FILES ONLINE</h3>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fa fa-arrows-alt" aria-hidden="true"></i>
+              <h3>How Do I Resize An Image?</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fas fa-file-image" aria-hidden="true"></i>
+              <h3>Image Resize Only</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fa fa-question" aria-hidden="true"></i>
+              <h3>Resize Image Files – But Why?</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fas fa-user-shield" aria-hidden="true"></i>
+              <h3>Your Files Are Safe</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fa fa-arrows-alt" aria-hidden="true"></i>
+              <h3>The Size Of An Image</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="box p-3">             
+            <div class="heading">
+              <i class="fa fa-mobile" aria-hidden="true"></i>
+              <h3>Resize Image Online</h3>
+            </div>
+            <div class="content">
+              <p>We’ve got the answer. To resize an image, upload it using the box above. You can upload from a cloud storage or link as well.</p>
+              <p>After uploading, choose the image file format the resized image. Then, you have two options to resize the image:</p>
+              <p>Using the actual pixels is very straightforward. DPI mainly changes the size when it comes to printing. Now, just click on “Convert” and that’s it!</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
 
-
-
+<script type="text/javascript" src="https://js.live.net/v7.2/OneDrive.js"></script>
+<script type="text/javascript" src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
 <script type="text/javascript" src="functions.js"></script>
+<script>
+  //this techinque for avoid conflicting dropins and dropbox sdk
+  var DropboxSdk = new Dropbox.Dropbox({ accessToken: 'NL5iPRnmbYAAAAAAAAAAHkUzyVieNYXtOUo7_1eLPMjld359abgIDO0BNEOK3Ss3', fetch: fetch })
+</script>
+<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="t5h6ylcivuzis7t"></script>
+<script>
+  var dropins = Dropbox;
+</script>
+<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+<script src="./goole-drive.js"></script>
+<!-- <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> -->
 </body>
 </html>

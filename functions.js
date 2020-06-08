@@ -10,11 +10,13 @@
 
 		let dropArea = document.getElementById('upload_box');
 		const inpFile = document.getElementById("inpFile");
+
 		const previewContainer = document.getElementById("imagePreview");
 		const previewImage = previewContainer.querySelector(".image_preview_image");
 		const previewDefaultText = previewContainer.querySelector(".image_preview__default_text");
 		function selectFormat() {
 			format = document.getElementById("format_select").value;
+			console.log("reve", previewImage.getAttribute('fileName'), previewImage.getAttribute('mimeType'));
 		}
 		function selectSocial() {
 			var social_select = document.getElementById("social_select").value;
@@ -195,7 +197,7 @@
 		        var target_format = "image/" + format;
 		        var rawImageData = canvas.toDataURL(target_format);
 
-		        rawImageData = rawImageData.replace("image/png", target_format)
+		        rawImageData = rawImageData.replace("image/png", target_format);
 		        if (rawImageData.length > 10) {
 		        	link.href = rawImageData;
 					link.download = 'download_compress.'+format;
@@ -409,20 +411,26 @@
 		    var y = document.getElementById("inpFile").value;
 		    document.getElementById("selectedFileName").innerHTML = y;
 	  	}
-	  	document.getElementById("customButton").addEventListener("click", function(){
+	  	document.getElementById("fileUploadButton").addEventListener("click", function(){
 		  	document.getElementById("inpFile").click();  // trigger the click of actual file upload button
 		});
 		function importURL() {
 			var y = document.getElementById("remoteURL").value;
 			document.getElementById("selectedFileName").innerHTML = y;
-			previewImage.setAttribute("src", y);
-			// console.log("previewImage", previewImage);
-			// console.log("size", previewImage.width, previewImage.style.width);
-			// document.getElementById("image_preview_image").src = y;
+			fetch(y, {
+				mode: 'cors'
+			})
+			.then(resp => resp.blob())
+			.then(blob => {
+				previewAnduploadImage(blob);
+			})
+			.catch(error => console.log(error.json()));
 		}
 		
 		
 		dropArea.addEventListener('click', function() {
+			// e.preventDefault();
+			// e.stopImmediatePropagation();
 			inpFile.click();
 		});
 		
@@ -432,10 +440,13 @@
 		}
  		function addClass() {
  			dropArea.classList.add("highlight");
+ 			document.getElementById("upload_button").classList.add("highlight");
  		}
  		function removeClass() {
  			dropArea.classList.remove("highlight");
+ 			document.getElementById("upload_button").classList.remove("highlight");
  		}
+ 		
 		dropArea.addEventListener('dragenter', preventDefault, false);
 		dropArea.addEventListener('dragleave', preventDefault, false);
 		dropArea.addEventListener('dragover', preventDefault, false);
@@ -443,7 +454,7 @@
 		dropArea.addEventListener('dragenter', addClass, false);
 		dropArea.addEventListener('dragleave', removeClass, false);
 		dropArea.addEventListener('dragover', addClass, false);
-		dropArea.addEventListener('drop', addClass, false);
+		dropArea.addEventListener('drop', removeClass, false);
 
 		let initialW, initialY;
 
@@ -827,6 +838,498 @@
 
 		    return true;
 		}
+		// Upload to Google Drive
+		// var CLIENT_ID = '92042338325-kk48b7hq7md51sfj1pgi1et1surrm4up.apps.googleusercontent.com';
+		// var SCOPES = 'https://www.googleapis.com/auth/drive';
+
+		// function checkAuth() {
+		// 	gapi.auth.authorize(
+		// 	{'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+		// 	handleAuthResult);
+		// }
+		// function handleAuthResult(authResult) {
+		// 	if (authResult && !authResult.error) {
+		// 		newUploadFile();
+		// 	} else {	
+		// 	}
+		// }
+		// function newUploadFile(evt){
+		// 	gapi.client.load('drive','v2', function(){
+		// 	var theImage = document.getElementById('image_preview_image');
+
+		// 	var metadata = {
+		// 	'title': fileTitle,
+		// 	'mimeType': mimeType
+		// 	};
+		// 	var pattern = 'data:' + mimeType + ';base64,';
+		// 	var base64Data = theImage.src.replace(pattern,'');            
+		// 		newInsertFile(base64Data,metadata);
+		// 	});
+		// }
+		// function newInsertFile(base64Data, metadata, callback){
+		// 	const boundary = '-------314159265358979323846';
+		// 	const delimiter = "\r\n--" + boundary + "\r\n";
+		// 	const close_delim = "\r\n--" + boundary + "--";
+		// 	var contentType = metadata.mimeType || 'application/octet-stream';
+		// 	var multipartRequestBody =delimiter +'Content-Type: application/json\r\n\r\n' +JSON.stringify(metadata) +delimiter +'Content-Type: ' + contentType + '\r\n' +'Content-Transfer-Encoding: base64\r\n' +'\r\n' +base64Data +close_delim;
+		// 	var request = gapi.client.request({
+		// 		'path' : '/upload/drive/v2/files',
+		// 		'method' : 'POST',
+		// 		'params' : {
+		// 		'uploadType' : 'multipart'
+		// 		},
+		// 		'headers' : {
+		// 		'Content-Type' : 'multipart/mixed; boundary="' + boundary + '"'
+		// 		},
+		// 		'body' : multipartRequestBody
+		// 	});
+		// 		if (!callback) {
+		// 		callback = function (file) {
+		// 		alert('done');
+		// 		};
+		// 		}
+		// 		request.execute(callback);
+		// }
+
+		// Load from Drop Box
+		function showDropBoxPicker(e){
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			dropins.choose({
+				success: function(files) {
+					//DropboxSdk.filesDownload
+					link = files[0].link;
+					fetch(link)
+					.then(resp => resp.blob())
+					.then(blob => {
+						previewAnduploadImage(blob);
+					})
+					.catch(r => r.json())
+					.catch(e => console.log(e));
+				},
+				cancel: function() {
+				},
+				linkType: "direct", // or "direct"
+				multiselect: false, // or true
+				extensions: [".jpg", '.png', '.gif', '.jpeg'],
+				folderselect: false, // or true
+			})
+		}
+		// Load from Google Drive
+		function showGDrivePickerDialog(e){
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			loadPicker()
+		}
+		function loadPicker() {
+			gapi.load('auth', {'callback': onAuthApiLoad});
+			gapi.load('picker', {'callback': onPickerApiLoad});
+		}
+		function onAuthApiLoad() {
+			window.gapi.auth.authorize(
+			{
+				'client_id': clientId,
+				'scope': scope,
+				'immediate': false
+			},
+			handleAuthResult);
+		}
+		
+		function onPickerApiLoad() {
+			pickerApiLoaded = true;
+			createPicker();
+		}
+		function handleAuthResult(authResult) {
+			if (authResult && !authResult.error) {
+				oauthToken = authResult.access_token;
+				createPicker();
+			}
+		}
+		function createPicker() {
+			if (pickerApiLoaded && oauthToken) {
+				var view = new google.picker.View(google.picker.ViewId.DOCS);
+				view.setMimeTypes("image/png,image/jpeg,image/jpg");
+				var picker = new google.picker.PickerBuilder()
+					.enableFeature(google.picker.Feature.NAV_HIDDEN)
+					.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+					.setAppId(projectId)
+					.setOAuthToken(oauthToken)
+					.addView(view)
+					.addView(new google.picker.DocsUploadView())
+					.setDeveloperKey(APIKey)
+					.setCallback(pickerCallback)
+					.build();
+				picker.setVisible(true);
+			}
+		}
+		function pickerCallback(data) {
+			if (data.action == google.picker.Action.PICKED) {
+				var fileId = data.docs[0].id;
+				fetch("https://www.googleapis.com/drive/v3/files/"+fileId+'?alt=media', {
+					method: "GET",
+					headers: new Headers({
+						Authorization: 'Bearer '+oauthToken,
+					})
+				})
+				.then(response => response.blob())
+				.then(blob => {
+					//after user picked a image from google drive we attach that to dom
+					previewImage.style.display = "block";
+					var urlCreator = window.URL || window.webkitURL;
+					var imageUrl = urlCreator.createObjectURL( blob );
+					previewImage.setAttribute("src", imageUrl);
+				}).catch(error => console.log(error));
+		
+			}
+		}
+		// Load from One Drive
+		var onetoken;
+		function launchOneDrivePicker(e){
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			OneDrive.open({
+				clientId: "74eedfae-460b-4d0f-b53a-e8c4dc819b8a",
+				action: "download",
+				multiSelect: false,
+				advanced: {
+					redirectUri: 'http://localhost:8000'
+				},
+				success: function(files) { 
+					console.log(files);
+					const url = files.value[0]['@microsoft.graph.downloadUrl'];
+					onetoken = files.accessToken;
+					localStorage.setItem('onedrive_token', files.accessToken);
+					fetch(url, {
+						method: "GET"
+					})
+					.then(resp => resp.blob())
+					.then(blob => {
+						previewAnduploadImage(blob);
+					})
+					.catch(error => error.json())
+					.catch(err => {
+						alert('sorry this image is not downloadable');
+					});
+				},
+				cancel: function() { 
+
+				},
+				error: function(error) {
+					alert(error);
+				}
+			});
+		}
+		// Upload to One Drive
+
+
+		// Upload to Drop Box
+		// function uploadImgToDropBox() {
+		// 	var oImage = document.getElementById("image_preview_image");
+		//     var canvas = document.createElement("canvas");
+		//     if (typeof canvas.getContext == "undefined" || !canvas.getContext) {
+		//         alert("browser does not support this action, sorry");
+		//         return false;
+		//     }
+		//     try {
+		//         var context = canvas.getContext("2d");
+		//         var width = oImage.width;
+		//         var height = oImage.height;
+		//         canvas.width = width;
+		//         canvas.height = height;
+		//         if (sizeUnit) {
+		//         	canvas.style.width = width + sizeUnit;
+		//         	canvas.style.height = height + sizeUnit;
+		//         } else {
+		//         	canvas.style.width = width + 'px';
+		//         	canvas.style.height = height + 'px';
+		//         }
+		//         context.drawImage(oImage, 0, 0, width, height);
+		//         if (format) {
+		//         	var target_format = "image/" + format;
+		//         } else {
+		//         	var target_format = "image/png"
+		//         }
+		//         var rawImageData = canvas.toDataURL(target_format);
+		//         rawImageData = rawImageData.replace("image/png", target_format);
+		//         uploadToDropBox(rawImageData);
+		//         document.body.removeChild(canvas);
+		//     }
+		//     catch (err) {
+		//         document.body.removeChild(canvas);
+		//         alert("Sorry, can't download");
+		//     }
+		// }
+		// Upload to One Drive
+		function uploadImgToOneD() {
+			OneDrive.save({
+				clientId: "339a3091-65da-47c5-81b2-144e6d67acee",
+				action: "save",
+				sourceInputElementId: "inpFile",
+			})
+		}
+		// function uploadImgToOneD() {
+		// 	var oImage = document.getElementById("image_preview_image");
+		//     var canvas = document.createElement("canvas");
+		//     // var link = document.createElement('a');
+  			
+  // 			// document.body.appendChild(link);
+		//     // link.appendChild(canvas);
+		//     if (typeof canvas.getContext == "undefined" || !canvas.getContext) {
+		//         alert("browser does not support this action, sorry");
+		//         return false;
+		//     }
+		//     try {
+		//         var context = canvas.getContext("2d");
+		//         var width = oImage.width;
+		//         var height = oImage.height;
+		//         canvas.width = width;
+		//         canvas.height = height;
+		//         canvas.style.width = width + sizeUnit;
+		//         canvas.style.height = height + sizeUnit;
+		//         if (sizeUnit) {
+		//         	canvas.style.width = width + sizeUnit;
+		//         	canvas.style.height = height + sizeUnit;
+		//         } else {
+		//         	canvas.style.width = width + 'px';
+		//         	canvas.style.height = height + 'px';
+		//         }
+		//         context.drawImage(oImage, 0, 0, width, height);
+		//         if (format) {
+		//         	var target_format = "image/" + format;
+		//         } else {
+		//         	var target_format = "image/png"
+		//         }
+		//         var rawImageData = canvas.toDataURL(target_format);
+
+		//         // rawImageData = rawImageData.replace("image/png", target_format);
+		//         if (rawImageData.length > 10) {
+		//         	uploadToOneDrive(dataURLtoBlob(rawImageData));
+		//         } else {
+		//         	alert("Selece Image...")
+		//         }
+		//     }
+		//     catch (err) {
+		//         // document.body.removeChild(canvas);
+		//         alert("Sorry, can't download");
+		//     }
+
+		//     return true;
+		// }
+		// function uploadToOneDrive(file) {
+		// 	// console.log("upload file",file);
+		// 	console.log("==>",file);
+		// 	console.log("onetoken", onetoken);
+		// 	const obj = {
+		// 		"item": {
+		// 		  "@microsoft.graph.conflictBehavior": "rename",
+		// 		  "name": file.name
+		// 		}
+		// 	  }
+
+		// 	fetch(`https://graph.microsoft.com/v1.0/drive/root:/${file.name}:/createUploadSession`, {
+		// 		method: 'POST',
+		// 		headers: new Headers({
+		// 			'Authorization': onetoken,
+		// 			'Content-Type': 'application/json'
+		// 		}),
+		// 		body: JSON.stringify(obj)
+		// 	})
+		// 	.then(resp => {
+		// 		return resp.json()
+		// 	})
+		// 	.then(resp => {
+		// 		console.log(resp)
+		// 		largeFileUpload(resp.uploadUrl, file);
+				
+		// 	})
+		// 	.catch(error => {
+		// 		console.log(error);
+				
+		// 	});
+		// }
+		// function uploadToOneDrive(file) {
+		// 	const url = `https://graph.microsoft.com/v1.0/me/drive/items/191919/createUploadSession`;
+		// 	console.log("onetoken", onetoken);
+		// 	const fileInfo = {
+		// 		"item": {
+		// 			"@odata.type": "microsoft.graph.driveItemUploadableProperties",
+		// 			"@microsoft.graph.conflictBehavior": "rename",
+		// 			"name": file.name
+		// 		}
+		// 	};
+
+		// 	fetch(url, {
+		// 		method: "POST",
+		// 		headers: new Headers({
+		// 			'Authorization': `Bearer ${onetoken}`,
+		// 			'Content-Type': 'application/json'
+		// 		}),
+		// 		body: JSON.stringify(fileInfo)
+		// 	})
+		// 	.then(resp => resp.json())
+		// 	.then(resp => {
+		// 		//localStorage.setItem('onedrive_token', null);
+		// 		console.log(resp);
+		// 	})
+		// 	.catch(error => error.json())
+		// 	.catch(error => console.log(error));
+		// }
+		function largeFileUpload(url, file) {
+			const range = `bytes ${0}-${file.size-1}/${file.size}`;
+			console.log(range)
+			console.log("url",url, "file", file);
+			fetch(url, {
+				method: "PUT",
+				headers: new Headers({
+					'Content-Length': file.size,
+					'Content-Range': range,
+				}),
+				body: file
+			})
+			.then(resp => resp.json())
+			.then(resp => {
+				console.log(resp);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		}
+		function uploadToDropBox() {
+			// console.log(file.name)
+			var link = document.getElementById("saveDropBox");
+			var oImage = document.getElementById("image_preview_image");
+		    var canvas = document.createElement("canvas");
+		    if (typeof canvas.getContext == "undefined" || !canvas.getContext) {
+		        alert("browser does not support this action, sorry");
+		        return false;
+		    }
+		    try {
+		        var context = canvas.getContext("2d");
+		        var width = oImage.width;
+		        var height = oImage.height;
+		        canvas.width = width;
+		        canvas.height = height;
+		        if (sizeUnit) {
+		        	canvas.style.width = width + sizeUnit;
+		        	canvas.style.height = height + sizeUnit;
+		        } else {
+		        	canvas.style.width = width + 'px';
+		        	canvas.style.height = height + 'px';
+		        }
+		        context.drawImage(oImage, 0, 0, width, height);
+		        if (format) {
+		        	var target_format = "image/" + format;
+		        } else {
+		        	var target_format = "image/png"
+		        }
+		        var rawImageData = canvas.toDataURL(target_format);
+		        link.href = rawImageData;
+		        link.click();
+		    }
+		    catch (err) {
+		        // document.body.removeChild(canvas);
+		        alert("Sorry, can't download");
+		    }
+		}
+		//upload to google drive
+		function loadPickerToGoogle() {
+			gapi.load('auth', {'callback': onAuthApiLoad});
+		}
+		
+		function onAuthApiLoad() {
+			window.gapi.auth.authorize(
+			{
+				'client_id': clientId,
+				'scope': scope,
+				'immediate': false
+			},
+			handleAuthResultToGoogle);
+		}
+		function handleAuthResultToGoogle(authResult) {
+			if (authResult && !authResult.error) {
+				oauthToken = authResult.access_token;
+				uploadImgToGoogle();
+			}
+		}
+		function uploadImgToGoogle() {
+			var oImage = document.getElementById("image_preview_image");
+		    var canvas = document.createElement("canvas");
+		    document.body.appendChild(canvas);
+		    if (typeof canvas.getContext == "undefined" || !canvas.getContext) {
+		        alert("browser does not support this action, sorry");
+		        return false;
+		    }
+		    try {
+		    	console.log("authtoken", oauthToken);
+		        var context = canvas.getContext("2d");
+		        var width = oImage.width;
+		        var height = oImage.height;
+		        canvas.width = width;
+		        canvas.height = height;
+		        if (sizeUnit) {
+		        	canvas.style.width = width + sizeUnit;
+		        	canvas.style.height = height + sizeUnit;
+		        } else {
+		        	canvas.style.width = width + 'px';
+		        	canvas.style.height = height + 'px';
+		        }
+		        context.drawImage(oImage, 0, 0, width, height);
+		        if (format) {
+		        	var target_format = "image/" + format;
+		        } else {
+		        	var target_format = "image/png"
+		        }
+		        var rawImageData = canvas.toDataURL(target_format);
+		        rawImageData = rawImageData.replace("image/png", target_format);
+		        if(oauthToken) {
+					//upload to goole drive
+					uploadToGooleDrive(dataURLtoBlob(rawImageData));
+					alert("Successfully Upload to Google Drive");
+				} else {
+					loadPickerToGoogle();
+				}
+		        document.body.removeChild(canvas);
+		    }
+		    catch (err) {
+		        document.body.removeChild(canvas);
+		        alert("Sorry, can't download");
+		    }
+		    return true;
+		}
+		function uploadToGooleDrive(file) {
+			// As a sample, upload a text file.
+			var metadata = {
+				'name': file.name, // Filename at Google Drive
+				'mimeType': file.type, // mimeType at Google Drive
+			};
+
+			var accessToken = oauthToken; // Here gapi is used for retrieving the access token.
+			var form = new FormData();
+			form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+			form.append('file', file);
+
+			fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+				method: 'POST',
+				headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+				body: form,
+			}).then((res) => {
+				return res.json();
+			}).then(function(val) {
+				console.log(val);
+			})
+			.catch(err => console.log(err));
+		}
+		//helper function that convert DataURL to BLOB make uploadable to server
+		function dataURLtoBlob(dataurl) {
+			var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+				bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+			while(n--){
+				u8arr[n] = bstr.charCodeAt(n);
+			}
+			const blob = new Blob([u8arr], {type:mime})
+			blob.name = new Date().getUTCMilliseconds()+'-compresssed_file.'+mime.split('/')[1];
+			return blob;
+		}
 		$(document).ready(function(){
 			$('#blur_control').prop('checked', false);
 			$('#blur_range').hide();
@@ -853,4 +1356,8 @@
 			$('#scale_height_size').val('');
 			$('#social_width_size').val('');
 			$('#social_height_size').val('');
+			$("#remoteURL_modal").click(function(e){
+				e.stopPropagation();
+			    $("#myModal").modal("toggle");
+			});
 		});
