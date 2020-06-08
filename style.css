@@ -278,6 +278,7 @@ ul{
   }
   .tab-pane {
     margin-top: 1rem;
+    margin-right: -30px;
     }
 }
 @media only screen and (max-width: 1000px) {
