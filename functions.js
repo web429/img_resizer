@@ -389,7 +389,8 @@
 		    var y = document.getElementById("inpFile").value;
 		    document.getElementById("selectedFileName").innerHTML = y;
 	  	}
-	  	document.getElementById("fileUploadButton").addEventListener("click", function(){
+	  	document.getElementById("fileUploadButton").addEventListener("click", function(e){
+	  		e.stopPropagation();
 		  	document.getElementById("inpFile").click();  // trigger the click of actual file upload button
 		});
 		function importURL() {
