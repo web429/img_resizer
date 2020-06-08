@@ -4,6 +4,7 @@
   <title>Image Resizer Tools</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="./style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.5.0/css/all.min.css" />
@@ -14,17 +15,6 @@
 <body>
 
 <div class="top-bar">
-  <script type="text/javascript">
-window.onload = function() {
-    var saverOptions = { file: "file" /* ... */ };
-    var saverButton = OneDrive.createSaveButton(saverOptions);
-    document.getElementById("save").appendChild(saverButton);
-}
-</script>
-
-<input id="file" name="file" type="file" />
-<div id="save"></div>
-
 <div class="container">
   <div class="text">
       <h1>Resize Images Files Online</h1>
@@ -53,10 +43,6 @@ window.onload = function() {
     <div class="upload_box col-md-12 col-xs-12" id="upload_box">
         <form class="upload_button" id="upload_button" action="javascript:void(0);" data-url="" method="post" enctype="multipart/form-data">
           <input class="hidden" id="inpFile" type="file" name="file" />
-          <!-- <div class="upload_button">
-            <input class="filebutton" type="file" name="inpFile" id="inpFile" onchange="changeText()"/>
-            <button id="customButton" title="Upload a file from your device...">Choose File...</button>
-          </div> -->
           <div class="dropnotes">
             <i class="fa fa-cloud-upload-alt fa-5x"></i>
             <span class="w-100 d-inline-block">
@@ -75,10 +61,6 @@ window.onload = function() {
           </div>
         </form>
     </div>
-
-    <!-- <div class="remoteURL_button">
-      <button id="remoteURL_modal" data-toggle="modal" data-target="#myModal">From URL</button>
-    </div> -->
     <div class="modal" id="myModal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -178,7 +160,7 @@ window.onload = function() {
               <button class="btn btn-primary" onclick="downloadImg()">Download</button>
               <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
               </a>
-              <div class="btn-group" style="float: right;">
+              <div class="btn-group google_omit" style="float: right;">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                 Upload to 
                 </button>
@@ -189,7 +171,6 @@ window.onload = function() {
                 </div>
 
             </div>
-              <!-- <button class="btn btn-success" onclick="checkAuth()">Upload to Google Drive</button> -->
             </div>
           </div>
         </div>
@@ -615,6 +596,6 @@ window.onload = function() {
 </script>
 <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 <script src="./goole-drive.js"></script>
-<!-- <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> -->
+
 </body>
 </html>
