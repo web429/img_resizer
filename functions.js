@@ -881,11 +881,11 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			OneDrive.open({
-				clientId: "74eedfae-460b-4d0f-b53a-e8c4dc819b8a",
+				clientId: "57070809-80a4-45a6-b53c-0d24ae4c3b71",
 				action: "download",
 				multiSelect: false,
 				advanced: {
-					redirectUri: 'http://localhost:8000'
+					redirectUri: 'https://websoft365.com'
 				},
 				success: function(files) { 
 					// console.log(files);

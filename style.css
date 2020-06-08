@@ -7,6 +7,9 @@ body {
     color: #585858;
     text-align: left;
 }
+.row {
+    margin: 0;
+}
 .top-bar{
     background: #f5f5f5;
         }
