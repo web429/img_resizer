@@ -89,7 +89,7 @@
       <div class="path_text">
         <span id="selectedFileName"></span>
       </div>
-      <button class="btn btn-default" id="full_size" onclick="FullSizeImg()">Look at full image</button>
+      <button class="btn btn-primary mb-2" id="full_size" onclick="FullSizeImg()">View full size image</button>
       <div class="row pb-3">
         <div class="image-preview col-md-8 col-sm-12 col-xs-12" id="imagePreview">
           <img src="" alt="Image Preview" id="image_preview_image" class="image_preview_image" />
@@ -165,7 +165,6 @@
                     </div>
                   </div>
                 </div>
-                <button class="btn btn-primary" onclick="downloadImg()">Download</button>
                 <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
                 </a>
                 <div class="btn-group google_omit" style="float: right;">
@@ -173,12 +172,12 @@
                   Save to 
                   </button>
                   <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="downloadImg()">Local Drive</a>
                     <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
                     <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
                     <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
                   </div>
-
-              </div>
+                </div>
               </div>
             </div>
           </div>
@@ -233,7 +232,19 @@
                 </div>
               </div>  
             </div>
-            <button class="btn btn-primary mt-5" onclick="downloadCompressImg()">Download</button>
+            <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
+                </a>
+                <div class="btn-group google_omit" style="float: right;">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Save to 
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="downloadCompressImg()">Local Drive</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
+                  </div>
+                </div>
           </div>
           <div class="image-settings container tab-pane fade" id="filter">
               <div class="card">
@@ -360,7 +371,19 @@
                     </div>
                   </div>
                   
-                  <button class="btn btn-primary" onclick="downloadFilterImg()">Convert to JPG</button>
+                  <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
+                </a>
+                <div class="btn-group google_omit" style="float: right;">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Save as JPG to online drives
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="downloadFilterImg()">Local Drive</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
+                  </div>
+                </div>
                 </div>
               </div>
           </div>
@@ -400,6 +423,19 @@
                   </div>
                 </div>
                 <button class="btn btn-primary" onclick="downloadScaleImg()">Save</button>
+                <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
+                </a>
+                <div class="btn-group google_omit" style="float: right;">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Save to 
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="downloadScaleImg()">Local Drive</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -476,6 +512,19 @@
                 </div>
                 
                 <button class="btn btn-primary" onclick="downloadSocialImg()">Save</button>
+                <a href="javascript:void(0)" class="dropbox-saver" id="saveDropBox" style="display: none">
+                </a>
+                <div class="btn-group google_omit" style="float: right;">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  Save to 
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="downloadSocialImg()">Local Drive</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadToDropBox()">DropBox</a>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToGoogle()">Google Drive</a>
+                    <!-- <a class="dropdown-item" href="javascript:void(0)" onclick="uploadImgToOneD()">One Drive</a> -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>

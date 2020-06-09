@@ -241,11 +241,11 @@ ul{
 	transition: .5s all;
 
 }*/
-#full_size {
+/*#full_size {
     background: transparent;
     outline: none;
     border: none;
-}
+}*/
 
 .filebutton {
 	display: none;
