@@ -28,7 +28,7 @@ body {
 #upload_box{
 	background-color: #1976d2;
     padding: 10px;
-    height: 270px;
+    height: 200px;
     margin: 10px 0 20px;
     font-size: 18px;
     position: relative;
@@ -100,14 +100,14 @@ body {
 }*/
 .fileuplodButtom {
     width: 100%;
-    padding: 20px 15px;
+    padding: 10px 15px;
     position: relative;
     z-index: 10;
-}    
+}   
 .fileuplodButtom a{
     color: #fff;
     padding-left: 20px;
-    font-size: 18px;
+    font-size: 14px;
 }      
 .text{
     padding-top: 20px;
