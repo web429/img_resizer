@@ -267,6 +267,7 @@ ul{
     /*overflow: scroll;*/
     position: relative;
 }
+
 .image_preview__default_text {
     position: absolute;
     left: 50%;
@@ -316,28 +317,45 @@ ul{
   .final_omit {
     display: none;
   }
+  .text h1 {
+    font-size: 1.5rem;
+  }
   .image-preview {
     margin: 0 1rem;
     max-height: 400px;
   }
   .alert {
     display: block;
+    font-size: 14px;
   }
   .text h2 {
     display: none;
   }
+
 }
 @media only screen and (max-width: 380px) {
   .google_omit {
     display: none;
   }
+  .text h1 {
+    font-size: 1.2rem;
+  }
   .image-preview {
     max-height: 300px;
+  }
+  .alert {
+    font-size: 12px;
   }
 }
 @media only screen and (max-width: 250px) {
   .choose_omit {
     display: none;
+  }
+  .text h1 {
+    font-size: 1rem;
+  }
+  .alert {
+    font-size: 10px;
   }
   #upload_box {
     height: 220px;

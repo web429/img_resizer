@@ -498,9 +498,10 @@
 			})
 			.then(resp => {
 				console.log(resp);
-				resp.blob();
+				return resp.blob();
 			})
 			.then(blob => {
+				console.log("blob", blob);
 				previewAnduploadImage(blob);
 			})
 			.catch(error => console.log(error.json()));
