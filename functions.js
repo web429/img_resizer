@@ -1,3 +1,43 @@
+		$(document).ready(function(){
+			$('#blur_control').prop('checked', false);
+			$('#blur_range').hide();
+			$('#blur_customRange').val(0);
+			$('#grayscale_control').prop('checked', false);
+			$('#grayscale_range').hide();
+			$('#grayscale_customRange').val("0");
+			$('#brightness_control').prop('checked', false);
+			$('#brightness_range').hide();
+			$('#brightness_customRange').val("100");
+			$('#contrast_control').prop('checked', false);
+			$('#contrast_range').hide();
+			$('#contrast_customRange').val("100");
+			$('#invert_control').prop('checked', false);
+			$('#invert_range').hide();
+			$('#invert_customRange').val("0");
+			$('#saturate_control').prop('checked', false);
+			$('#saturate_range').hide();
+			$('#saturate_customRange').val("100");
+			$('#sepia_control').prop('checked', false);
+			$('#sepia_range').hide();
+			$('#sepia_customRange').val("0");
+			$('#opacity_control').prop('checked', false);
+			$('#opacity_range').hide();
+			$('#opacity_customRange').val("100");
+			$('#huerotate_control').prop('checked', false);
+			$('#huerotate_range').hide();
+			$('#huerotate_customRange').val("0");
+			$('#scalar_customRange').val(100);
+			$('#width_size').val('');
+			$('#height_size').val('');
+			$('#scale_width_size').val('');
+			$('#scale_height_size').val('');
+			$('#social_width_size').val('');
+			$('#social_height_size').val('');
+			$("#remoteURL_modal").click(function(e){
+				e.stopPropagation();
+			    $("#myModal").modal("toggle");
+			});
+		});
 		//Resizer Variables
 		let sizeUnit = document.getElementById("unit_select").value,
 			format = document.getElementById("format_select").value;
@@ -172,6 +212,57 @@
 		function rangechange() {
 			compressnum = document.getElementById("customRange3").value;
 		}
+		function debugBase64(base64URL){
+    var win = window.open();
+    win.document.write('<iframe src="' + base64URL  + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+}
+		function FullSizeImg() {
+			var oImage = document.getElementById("image_preview_image");
+		    var canvas = document.createElement("canvas");
+		    var link = document.createElement('a');
+  			
+  			document.body.appendChild(canvas);
+		    link.appendChild(canvas);
+		    if (typeof canvas.getContext == "undefined" || !canvas.getContext) {
+		        alert("browser does not support this action, sorry");
+		        return false;
+		    }
+		    try {
+		        var context = canvas.getContext("2d");
+		        var width = oImage.width;
+		        var height = oImage.height;
+		        canvas.width = width;
+		        canvas.height = height;
+		        canvas.style.width = width + sizeUnit;
+		        canvas.style.height = height + sizeUnit;
+		        context.drawImage(oImage, 0, 0, width, height);
+		        var target_format = "image/" + format;
+		        var rawImageData = canvas.toDataURL(target_format);
+
+		        rawImageData = rawImageData.replace("image/png", target_format);
+		        console.log("ra==>", rawImageData);
+		        if (rawImageData.length > 10) {
+		        	// window.location.href = rawImageData;
+		        	// window.open(rawImageData, "_blank");
+		        	debugBase64(rawImageData);
+		        	// link.href = rawImageData;
+					// link.download = 'download_compress.'+format;
+					// link.target = "_blank"
+					// link.click();
+					link.removeChild(canvas)
+			        document.body.removeChild(canvas);
+		        } else {
+		        	alert("Selece Image...")
+		        }
+		    }
+		    catch (err) {
+		    	link.removeChild(canvas);
+		        document.body.removeChild(link);
+		        alert("Sorry, can't download");
+		    }
+
+		    return true;
+		}
 		function downloadImg() {
 			var oImage = document.getElementById("image_preview_image");
 		    var canvas = document.createElement("canvas");
@@ -228,6 +319,7 @@
 		        var context = canvas.getContext("2d");
 		        var width = oImage.width;
 		        var height = oImage.height;
+		        console.log("width", width, height);
 		        canvas.width = width;
 		        canvas.height = height;
 		        canvas.style.width = width + 'px';
@@ -346,16 +438,24 @@
 		    return true;
 		}
 		function changeSocialWidth() {
-		    var y = document.getElementById("social_width_size").value;
-		    document.getElementById("image_preview_image").style.width = y+'px';
+		    let x = document.getElementById("social_width_size").value;
+		    // console.log("xxx=>",x);
+		    document.getElementById("image_preview_image").style.width = x+'px';
 	  	}
 	  	function changeSocialHeight() {
 		    var y = document.getElementById("social_height_size").value;
 		    document.getElementById("image_preview_image").style.height = y+'px';
 	  	}
 		function changeWidth() {
-		    var y = document.getElementById("width_size").value;
-		    document.getElementById("image_preview_image").style.width = y+sizeUnit;
+		    let x = document.getElementById("width_size").value;
+		    console.log("x=>", x);
+		    console.log("test", document.getElementById("imagePreview").width);
+		    document.getElementById("image_preview_image").style.width = x+sizeUnit;
+		    document.getElementById("image_preview_image").width = x+sizeUnit;
+	  	}
+	  	function changeHeight() {
+		    var y = document.getElementById("height_size").value;
+		    document.getElementById("image_preview_image").style.height = y+sizeUnit;
 	  	}
 	  	function scaleChangeWidth() {
 		    var w = document.getElementById("scale_width_size").value;
@@ -381,10 +481,7 @@
 		    $('#scale_width_size').val(w);
 			$('#scale_height_size').val(y);
 		}
-	  	function changeHeight() {
-		    var y = document.getElementById("height_size").value;
-		    document.getElementById("image_preview_image").style.height = y+sizeUnit;
-	  	}
+	  	
 		function changeText() {
 		    var y = document.getElementById("inpFile").value;
 		    document.getElementById("selectedFileName").innerHTML = y;
@@ -399,7 +496,10 @@
 			fetch(y, {
 				mode: 'cors'
 			})
-			.then(resp => resp.blob())
+			.then(resp => {
+				console.log(resp);
+				resp.blob();
+			})
 			.then(blob => {
 				previewAnduploadImage(blob);
 			})
@@ -526,8 +626,8 @@
 		let blurStatus = document.getElementById("blur_control").checked;
 		let grayscale_num = document.getElementById("grayscale_customRange").value;
 		let grayscaleStatus = document.getElementById("grayscale_control").checked;
-		let brightness_num = document.getElementById("grayscale_customRange").value;
-		let brightnessStatus = document.getElementById("grayscale_control").checked;
+		let brightness_num = document.getElementById("brightness_customRange").value;
+		let brightnessStatus = document.getElementById("brightness_control").checked;
 		let contrast_num = document.getElementById("contrast_customRange").value;
 		let contrastStatus = document.getElementById("contrast_control").checked;
 		let invert_num = document.getElementById("invert_customRange").value;
@@ -544,11 +644,27 @@
 			if (huerotateStatus) {
 				huerotate_num = document.getElementById("huerotate_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "hue-rotate("+huerotate_num+"deg)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "hue-rotate(0deg)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate(0deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			}
 		}
@@ -558,8 +674,17 @@
 				document.getElementById("huerotate_range").style.display = "block";
 			} else {
 				document.getElementById("huerotate_range").style.display = "none";
+				huerotate_num = 0;
 				if (previewImage) {
-					previewImage.style.filter = "hue-rotate(0deg)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate(0deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -567,11 +692,27 @@
 			if (opacityStatus) {
 				opacity_num = document.getElementById("opacity_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "opacity("+opacity_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "opacity(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity(100%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -581,8 +722,17 @@
 				document.getElementById("opacity_range").style.display = "block";
 			} else {
 				document.getElementById("opacity_range").style.display = "none";
+				opacity_num = 100;
 				if (previewImage) {
-					previewImage.style.filter = "opacity(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity(100%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -590,11 +740,27 @@
 			if (sepiaStatus) {
 				sepia_num = document.getElementById("sepia_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "sepia("+sepia_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "sepia(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia(0%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -604,8 +770,17 @@
 				document.getElementById("sepia_range").style.display = "block";
 			} else {
 				document.getElementById("sepia_range").style.display = "none";
+				sepia_num = 0;
 				if (previewImage) {
-					previewImage.style.filter = "sepia(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia(0%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -613,11 +788,27 @@
 			if (saturateStatus) {
 				saturate_num = document.getElementById("saturate_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "saturate("+saturate_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "saturate(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate(100%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -627,8 +818,17 @@
 				document.getElementById("saturate_range").style.display = "block";
 			} else {
 				document.getElementById("saturate_range").style.display = "none";
+				saturate_num = 100;
 				if (previewImage) {
-					previewImage.style.filter = "saturate(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate(100%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -636,11 +836,27 @@
 			if (invertStatus) {
 				invert_num = document.getElementById("invert_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "invert("+invert_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "invert(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert(0%)";;
 				}
 			}
 		}
@@ -650,8 +866,17 @@
 				document.getElementById("invert_range").style.display = "block";
 			} else {
 				document.getElementById("invert_range").style.display = "none";
+				invert_num = 0;
 				if (previewImage) {
-					previewImage.style.filter = "invert(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert(0%)";;
 				}
 			}
 		}
@@ -659,11 +884,27 @@
 			if (contrastStatus) {
 				contrast_num = document.getElementById("contrast_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "contrast("+contrast_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "contrast(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast(100%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -673,8 +914,17 @@
 				document.getElementById("contrast_range").style.display = "block";
 			} else {
 				document.getElementById("contrast_range").style.display = "none";
+				contrast_num = 100;
 				if (previewImage) {
-					previewImage.style.filter = "contrast(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast(100%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -682,11 +932,27 @@
 			if (brightnessStatus) {
 				brightness_num = document.getElementById("brightness_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "brightness("+brightness_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "brightness(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness(100%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -696,8 +962,17 @@
 				document.getElementById("brightness_range").style.display = "block";
 			} else {
 				document.getElementById("brightness_range").style.display = "none";
+				brightness_num = 100;
 				if (previewImage) {
-					previewImage.style.filter = "brightness(100%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness(100%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -705,11 +980,27 @@
 			if (grayscaleStatus) {
 				grayscale_num = document.getElementById("grayscale_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "grayscale("+grayscale_num+"%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "grayscale(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale(0%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -719,8 +1010,17 @@
 				document.getElementById("grayscale_range").style.display = "block";
 			} else {
 				document.getElementById("grayscale_range").style.display = "none";
+				grayscale_num = 0;
 				if (previewImage) {
-					previewImage.style.filter = "grayscale(0%)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale(0%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";;
 				}
 			}
 		}
@@ -728,11 +1028,27 @@
 			if (blurStatus) {
 				blur_num = document.getElementById("blur_customRange").value;
 				if (previewImage) {
-					previewImage.style.filter = "blur("+blur_num+"px)";
+					previewImage.style.filter = "blur("+blur_num+"px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			} else {
 				if (previewImage) {
-					previewImage.style.filter = "blur(0px)";
+					previewImage.style.filter = "blur(0px)" 
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			}
 		}
@@ -740,10 +1056,20 @@
 			blurStatus = document.getElementById("blur_control").checked;
 			if (blurStatus) {
 				document.getElementById("blur_range").style.display = "block";
+				console.log(blur_num,grayscale_num,brightness_num,contrast_num,huerotate_num,opacity_num,sepia_num,saturate_num,invert_num);
 			} else {
 				document.getElementById("blur_range").style.display = "none";
+				blur_num = 0;
 				if (previewImage) {
-					previewImage.style.filter = "blur(0px)";
+					previewImage.style.filter = "blur(0px)"
+												+ " " + "grayscale("+grayscale_num+"%)" 
+												+ " " + "brightness("+brightness_num+"%)"
+												+ " " + "contrast("+contrast_num+"%)"
+												+ " " + "hue-rotate("+huerotate_num+"deg)"
+												+ " " + "opacity("+opacity_num+"%)"
+												+ " " + "sepia("+sepia_num+"%)"
+												+ " " + "saturate("+saturate_num+"%)"
+												+ " " + "invert("+invert_num+"%)";
 				}
 			}
 		}
@@ -881,11 +1207,11 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			OneDrive.open({
-				clientId: "74eedfae-460b-4d0f-b53a-e8c4dc819b8a",
+				clientId: "57070809-80a4-45a6-b53c-0d24ae4c3b71",
 				action: "download",
 				multiSelect: false,
 				advanced: {
-					redirectUri: 'http://localhost:8000'
+					redirectUri: 'https://websoft365.com'
 				},
 				success: function(files) { 
 					// console.log(files);
@@ -1188,34 +1514,4 @@
 			blob.name = new Date().getUTCMilliseconds()+'-compresssed_file.'+mime.split('/')[1];
 			return blob;
 		}
-		$(document).ready(function(){
-			$('#blur_control').prop('checked', false);
-			$('#blur_range').hide();
-			$('#grayscale_control').prop('checked', false);
-			$('#grayscale_range').hide();
-			$('#brightness_control').prop('checked', false);
-			$('#brightness_range').hide();
-			$('#contrast_control').prop('checked', false);
-			$('#contrast_range').hide();
-			$('#invert_control').prop('checked', false);
-			$('#invert_range').hide();
-			$('#saturate_control').prop('checked', false);
-			$('#saturate_range').hide();
-			$('#sepia_control').prop('checked', false);
-			$('#sepia_range').hide();
-			$('#opacity_control').prop('checked', false);
-			$('#opacity_range').hide();
-			$('#huerotate_control').prop('checked', false);
-			$('#huerotate_range').hide();
-			$('#scalar_customRange').val(100);
-			$('#width_size').val('');
-			$('#height_size').val('');
-			$('#scale_width_size').val('');social_width_size
-			$('#scale_height_size').val('');
-			$('#social_width_size').val('');
-			$('#social_height_size').val('');
-			$("#remoteURL_modal").click(function(e){
-				e.stopPropagation();
-			    $("#myModal").modal("toggle");
-			});
-		});
+		

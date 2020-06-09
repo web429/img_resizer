@@ -1,0 +1,135 @@
+
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<title>Upload</title>
+
+<script type="text/javascript">
+var CLIENT_ID = '92042338325-kk48b7hq7md51sfj1pgi1et1surrm4up.apps.googleusercontent.com';
+var SCOPES = 'https://www.googleapis.com/auth/drive';
+
+/**
+       * Called when the client library is loaded to start the auth flow.
+       */
+function handleClientLoad() {
+
+window.setTimeout(checkAuth, 1);
+
+}
+/**
+       * Check if the current user has authorized the application.
+       */
+function checkAuth() {
+
+gapi.auth.authorize(
+
+{'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': true},
+
+handleAuthResult);
+
+}
+
+
+/**
+       * Called when authorization server replies.
+       * @param {Object} authResult Authorization result.
+       */
+
+function handleAuthResult(authResult) {
+
+var authButton = document.getElementById('authorizeButton');
+
+var filePicker = document.getElementById('filePicker');
+
+var uploadButton = document.getElementById('uploadButton');
+
+authButton.style.display = 'none';
+filePicker.style.display = 'none';
+uploadButton.style.display = 'none';
+if (authResult && !authResult.error) {
+// Access token has been successfully retrieved, requests can be sent to the API.
+filePicker.style.display = 'block';
+filePicker.onchange = loadImageFile;
+uploadButton.onclick = newUploadFile;
+} else {
+authButton.style.display = 'block';
+authButton.onclick = function() {
+gapi.auth.authorize(
+{'client_id': CLIENT_ID, 'scope': SCOPES, 'immediate': false},
+handleAuthResult);
+};
+}
+}
+
+ 
+
+function newUploadFile(evt){
+gapi.client.load('drive','v2', function(){
+var theImage = document.getElementById('editedImage');
+var fileTitle = theImage.getAttribute('fileName');
+var mimeType = theImage.getAttribute('mimeType');
+var metadata = {
+'title': fileTitle,
+'mimeType': mimeType
+};
+var pattern = 'data:' + mimeType + ';base64,';
+var base64Data = theImage.src.replace(pattern,'');            
+newInsertFile(base64Data,metadata);
+});
+
+}
+function newInsertFile(base64Data, metadata, callback){
+const boundary = '-------314159265358979323846';
+const delimiter = "\r\n--" + boundary + "\r\n";
+const close_delim = "\r\n--" + boundary + "--";
+var contentType = metadata.mimeType || 'application/octet-stream';
+var multipartRequestBody =delimiter +'Content-Type: application/json\r\n\r\n' +JSON.stringify(metadata) +delimiter +'Content-Type: ' + contentType + '\r\n' +'Content-Transfer-Encoding: base64\r\n' +'\r\n' +base64Data +close_delim;
+var request = gapi.client.request({
+'path' : '/upload/drive/v2/files',
+'method' : 'POST',
+'params' : {
+'uploadType' : 'multipart'
+},
+'headers' : {
+'Content-Type' : 'multipart/mixed; boundary="' + boundary + '"'
+},
+'body' : multipartRequestBody
+});
+if (!callback) {
+callback = function (file) {
+alert('done');
+};
+}
+request.execute(callback);
+}
+</script>
+
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+
+</head>
+
+<body>
+
+<!--Add a file picker for the user to choose an image file to be edited -->
+
+<input type="file" id="filePicker" style="display: none" />
+
+<!-- Add a button to start the upload process for loading the edited image file to Google Drive -->
+
+<input type="button" id="uploadButton" style="display:none" value="Upload" />
+
+<input type="button" id="authorizeButton" style="display: none" value="Authorize" />
+
+<!-- div placeholder for displaying the edited image -->
+
+<div id="resultsDiv">
+
+</div>
+
+</body>
+
+</html>
+
